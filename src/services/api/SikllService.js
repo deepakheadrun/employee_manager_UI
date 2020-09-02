@@ -1,14 +1,18 @@
-import axios from 'axios'
-const tokens = JSON.parse(localStorage.getItem("tokens"))
+import APIService from './APIService'
+
 export default {
-    getSkills(id){
-        const result =  axios
-        .get(process.env.VUE_APP_API_URL + "skill/?user_id=" + id, {
-          headers: {
-            Authorization: "Bearer " + tokens.access,
-          },
-        }).then((response)=>{return response.data}).catch((response)=>{response.data})
-    
-        return result
-    }
+  getSkills(id) {
+    const response =
+      APIService.get("skill/?user_id=" + id).then((response) => {
+        return response.data
+      })
+    return response
+  },
+  postSkill(bodyFormData){
+    const result = APIService.post("skill/",bodyFormData) 
+      .then((response) => {
+        return response.data
+    }).catch((response) => { return response.data })
+    return result
+  }
 }

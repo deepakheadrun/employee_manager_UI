@@ -139,7 +139,9 @@ export default {
       var bodyFormData = new FormData();
       bodyFormData.set("user_id", id);
       UserInfoService.postUserInfo(bodyFormData).then((response) => {
+        console.log(response)
         this.userData = response;
+        console.log(this.userData)
         this.getImageUrl("");
       });
     },

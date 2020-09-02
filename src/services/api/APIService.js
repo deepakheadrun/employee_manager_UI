@@ -22,8 +22,8 @@ export default {
             data: data,
             headers: { "Content-Type": "multipart/form-data", },
         }).then((response) => {
-            return response.data
-        }).catch((response) => { return response.data })
+            return response
+        }).catch((response) => { return response })
         return result
     },
     put(url, data) {
