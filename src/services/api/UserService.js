@@ -1,19 +1,35 @@
-import axios from 'axios'
+import APIService from './APIService'
 
-const tokens = JSON.parse(localStorage.getItem("tokens"))
 export default {
-    
-    getUsers(){
-        
-        const response = axios({
-            method: "get",
-            url: process.env.VUE_APP_API_URL + "user/",
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: "Bearer " + tokens.access,
-            },
-          }).then((response)=>{    
-              return response.data})
-        return response
-    }
+
+  getUsers() {
+    const response =
+      APIService.get("user/").then((response) => {
+        return response.data
+      })
+    return response
+  },
+  getLogedInUser(){
+    const response = APIService.get("rest-auth/user/").then((response)=>{
+      return response.data
+    })
+
+    return response
+  },
+  updateUser(data) {
+    const result = APIService.put("rest-auth/user/", data)
+      .then((response) => {
+        return response.data
+      }).catch((response) => { return response.data })
+
+    return result
+  },
+  addUser(data){
+    const result = APIService.post("accounts/register/", data)
+      .then((response) => {
+        return response.data
+      }).catch((response) => { return response.data })
+
+    return result
+  }
 }

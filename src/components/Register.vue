@@ -91,6 +91,7 @@
 </template>
 
 <script>
+import UserService from './../services/api/UserService'
 export default {
   name: "Register",
   data() {
@@ -111,15 +112,10 @@ export default {
       bodyFormData.set("email", this.username);
       bodyFormData.set("password", this.password);
       bodyFormData.set("password_confirm", this.password2);
-      this.axios({
-        method: "post",
-        url: process.env.VUE_APP_API_URL + "accounts/register/",
-        data: bodyFormData,
-        headers: { "Content-Type": "multipart/form-data" },
-      })
+      UserService.addUser(bodyFormData)
         .then(response=> {
           //handle success
-          console.log(response.data);
+          console.log(response);
          
           // this.setNewUserInfo(response.data.id)
           window.location.href = "/login";

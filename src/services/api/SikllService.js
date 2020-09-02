@@ -3,7 +3,7 @@ const tokens = JSON.parse(localStorage.getItem("tokens"))
 export default {
     getSkills(id){
         const result =  axios
-        .get(process.env.VUE_APP_API_URL + "skill/" + id + "/", {
+        .get(process.env.VUE_APP_API_URL + "skill/?user_id=" + id, {
           headers: {
             Authorization: "Bearer " + tokens.access,
           },

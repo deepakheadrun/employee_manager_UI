@@ -4,10 +4,9 @@ export default {
     getUserInfo(id) {
         const result = axios({
             method: "get",
-            url: process.env.VUE_APP_API_URL + "info/" + id + "/",
+            url: process.env.VUE_APP_API_URL + "info/?user_id=" + id,
             headers: {
-                "Content-Type": "multipart/form-data",
-                Authorization: "Bearer " + tokens.access,
+                'Content-Type': 'application/json',
             },
         }).then((response) => {
             return response.data

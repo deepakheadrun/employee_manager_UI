@@ -415,6 +415,9 @@
 <script>
 import axios from "axios";
 import Datepicker from "vuejs-datepicker";
+import UserService from '../services/api/UserService';
+import UserInfoService from '../services/api/UserInfoService';
+import InterestedAreaService from '../services/api/InterestedAreaService'
 export default {
   name: "BasicInfo",
   components: {
@@ -438,20 +441,15 @@ export default {
   },
   methods: {
     addNewInterestedArea() {
-      console.log(this.new_interested_area);
-      let tokens = JSON.parse(localStorage.getItem("tokens"));
+    
       var bodyFormData = new FormData();
 
       bodyFormData.set("user_id", this.userdata.user_id);
       bodyFormData.set("name", this.new_interested_area);
-      axios
-        .post(process.env.VUE_APP_API_URL + "interested_area/", bodyFormData, {
-          headers: {
-            Authorization: "Bearer " + tokens.access,
-          },
-        })
+      InterestedAreaService.postInterestedArea(bodyFormData)
+    
         .then((response) => {
-          this.interested_area.push(response.data);
+          this.interested_area.push(response);
         });
       this.new_interested_area = null;
     },
@@ -501,30 +499,25 @@ export default {
       this.$modal.hide("interestedArea-modal");
     },
     updateBasicInfo() {
-      let tokens = JSON.parse(localStorage.getItem("tokens"));
+    
       var bodyFormData = new FormData();
 
       bodyFormData.set("username", this.email);
       bodyFormData.set("first_name", this.f_name);
       bodyFormData.set("last_name", this.l_name);
-      axios
-        .put(process.env.VUE_APP_API_URL + "rest-auth/user/", bodyFormData, {
-          headers: {
-            Authorization: "Bearer " + tokens.access,
-          },
-        })
+      UserService.updateUser(bodyFormData)
         .then((response) => {
-          this.$store.dispatch("setLogedInUserRole", response.data);
-          this.email_ = response.data.email;
-          this.fName = response.data.first_name;
-          this.lName = response.data.last_name;
-          this.$emit("updateBasicInfo", response.data);
+          this.$store.dispatch("setLogedInUserRole", response);
+          this.email_ = response.email;
+          this.fName = response.first_name;
+          this.lName = response.last_name;
+          this.$emit("updateBasicInfo", response);
           
           this.basicinfohide();
         });
     },
     updateWork() {
-      let tokens = JSON.parse(localStorage.getItem("tokens"));
+     
       var bodyFormData = new FormData();
 
       bodyFormData.set("user_id", this.userdata.user_id);
@@ -535,18 +528,10 @@ export default {
       bodyFormData.set("reporting_to", this.reporting_to);
       bodyFormData.set("mobile", this.mobile);
       bodyFormData.set("date_of_joining", this.date_of_joining);
-      axios
-        .put(
-          process.env.VUE_APP_API_URL + "info/" + this.userdata.id + "/",
-          bodyFormData,
-          {
-            headers: {
-              Authorization: "Bearer " + tokens.access,
-            },
-          }
-        )
+      UserInfoService.updateUserInfo(bodyFormData,this.userdata.id)
+      
         .then((response) => {
-          this.userdata = response.data;
+          this.userdata = response;
           this.workhide();
         });
     },
@@ -582,7 +567,7 @@ export default {
     "isEditable",
   ],
   mounted() {
-  
+ 
   },
 };
 </script>
