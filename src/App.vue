@@ -1,5 +1,6 @@
 <template>
   <div id="app">  
+   <Loader  v-if="this.$store.state.isLoading"/>
     <nav class="flex items-center justify-between flex-wrap bg-teal-500 p-6">
       <div class="flex items-center flex-shrink-0 text-white mr-6">
         <span class="font-semibold text-4xl tracking-tight">Employee Manager</span>
@@ -37,6 +38,7 @@
 <script>
 import UserService from "./services/api/UserService";
 import UserRoleService from "./services/api/UserRoleService";
+import Loader from "./components/Loader"
 export default {
   name: "App",
   data() {
@@ -51,7 +53,7 @@ export default {
       user_id: null,
     };
   },
-  components: {},
+  components: {Loader},
   watch: {
     btnName() {
       let tokens = JSON.parse(localStorage.getItem("tokens"));
