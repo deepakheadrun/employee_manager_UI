@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app">  
     <nav class="flex items-center justify-between flex-wrap bg-teal-500 p-6">
       <div class="flex items-center flex-shrink-0 text-white mr-6">
         <span class="font-semibold text-4xl tracking-tight">Employee Manager</span>
@@ -68,20 +68,14 @@ export default {
     },
 
     userbtn() {
-      this.$router.push({ path: "/" });
-      setTimeout(() => {
-        this.$router.push({
-          name: "UserProfile",
-          params: {
-            item: {
-              id: this.$store.state.logedInUser.pk,
+      this.$store.dispatch("setSelectedUser",
+      {id: this.$store.state.logedInUser.pk,
               first_name: this.$store.state.logedInUser.first_name,
               last_name: this.$store.state.logedInUser.last_name,
               email: this.$store.state.logedInUser.email,
-            },
-          },
-        });
-      }, 3);
+})
+this.$router.push({ path: '/user/'+ this.$store.state.logedInUser.pk })
+    
     },
   },
   mounted() {

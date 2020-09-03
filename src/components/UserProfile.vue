@@ -107,7 +107,7 @@ export default {
       comments: [],
     };
   },
-  props: ["item"],
+  
   components: {
     BasicInfo,
     Work,
@@ -115,6 +115,7 @@ export default {
   },
   watch: {},
   mounted() {
+    this.item = this.$store.state.selectedUser
     if (!this.item) {
       window.location.href = "/";
     } else {
