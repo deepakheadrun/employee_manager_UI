@@ -227,10 +227,10 @@
             <div class="flex px-8 pt-4">
               <div class="w-1/2">
                 <div class="-mt-px pt-2">
-                   <label
-                  class="block text-gray-700 text-sm font-bold mb-2"
-                  for="interested_area"
-                >Add New Interested Area</label>
+                  <label
+                    class="block text-gray-700 text-sm font-bold mb-2"
+                    for="interested_area"
+                  >Add New Interested Area</label>
                   <input
                     aria-label="Add Interested Area"
                     v-model="new_interested_area"
@@ -413,11 +413,12 @@
 </template>
 
 <script>
-import axios from "axios";
+
 import Datepicker from "vuejs-datepicker";
-import UserService from '../services/api/UserService';
-import UserInfoService from '../services/api/UserInfoService';
-import InterestedAreaService from '../services/api/InterestedAreaService'
+import UserService from "../services/api/UserService";
+import UserInfoService from "../services/api/UserInfoService";
+import InterestedAreaService from "../services/api/InterestedAreaService";
+
 export default {
   name: "BasicInfo",
   components: {
@@ -433,46 +434,16 @@ export default {
       reporting_to: this.userdata.reporting_to,
       date_of_joining: this.userdata.date_of_joining,
       career_goal: this.userdata.career_goal,
-      fName:this.f_name,
-      lName:this.l_name,
-      email_:this.email,
+      fName: this.f_name,
+      lName: this.l_name,
+      email_: this.email,
       new_interested_area: null,
     };
   },
   methods: {
-    addNewInterestedArea() {
     
-      var bodyFormData = new FormData();
-
-      bodyFormData.set("user_id", this.userdata.user_id);
-      bodyFormData.set("name", this.new_interested_area);
-      InterestedAreaService.postInterestedArea(bodyFormData)
-    
-        .then((response) => {
-          this.interested_area.push(response);
-        });
-      this.new_interested_area = null;
-    },
-    deleteInterestedArea(id) {
-      let tokens = JSON.parse(localStorage.getItem("tokens"));
-
-      axios
-        .delete(process.env.VUE_APP_API_URL + "interested_area/" + id + "/", {
-          headers: {
-            Authorization: "Bearer " + tokens.access,
-          },
-        })
-        .then(() => {
-          this.interested_area = [
-            ...this.interested_area.filter((x) => x.id != id),
-          ];
-        });
-      this.new_interested_area = null;
-    },
     dateSelected(e) {
       this.date_of_joining = e.toISOString().slice(0, 10);
-
-      console.log(this.date_of_joining);
     },
     basicinfoshow() {
       this.$modal.show("basicinfo-modal");
@@ -498,26 +469,43 @@ export default {
     interestedAreahide() {
       this.$modal.hide("interestedArea-modal");
     },
+    addNewInterestedArea() {
+      var bodyFormData = new FormData();
+
+      bodyFormData.set("user_id", this.userdata.user_id);
+      bodyFormData.set("name", this.new_interested_area);
+      InterestedAreaService.postInterestedArea(bodyFormData)
+      .then((response) => {
+        this.interested_area.push(response);
+      });
+      this.new_interested_area = null;
+    },
+    deleteInterestedArea(id) {
+      InterestedAreaService.deleteInterestedArea(id)
+        .then(() => {
+          this.interested_area = [
+            ...this.interested_area.filter((x) => x.id != id),
+          ];
+        });
+      this.new_interested_area = null;
+    },
     updateBasicInfo() {
-    
       var bodyFormData = new FormData();
 
       bodyFormData.set("username", this.email);
       bodyFormData.set("first_name", this.f_name);
       bodyFormData.set("last_name", this.l_name);
-      UserService.updateUser(bodyFormData)
-        .then((response) => {
-          this.$store.dispatch("setLogedInUserRole", response);
-          this.email_ = response.email;
-          this.fName = response.first_name;
-          this.lName = response.last_name;
-          this.$emit("updateBasicInfo", response);
-          
-          this.basicinfohide();
-        });
+      UserService.updateUser(bodyFormData).then((response) => {
+        this.$store.dispatch("setLogedInUserRole", response);
+        this.email_ = response.email;
+        this.fName = response.first_name;
+        this.lName = response.last_name;
+        this.$emit("updateBasicInfo", response);
+
+        this.basicinfohide();
+      });
     },
     updateWork() {
-     
       var bodyFormData = new FormData();
 
       bodyFormData.set("user_id", this.userdata.user_id);
@@ -528,34 +516,23 @@ export default {
       bodyFormData.set("reporting_to", this.reporting_to);
       bodyFormData.set("mobile", this.mobile);
       bodyFormData.set("date_of_joining", this.date_of_joining);
-      UserInfoService.updateUserInfo(bodyFormData,this.userdata.id)
-      
-        .then((response) => {
-          this.userdata = response;
-          this.workhide();
-        });
+      UserInfoService.updateUserInfo(bodyFormData, this.userdata.id)
+      .then((response) => {
+        this.userdata = response;
+        this.workhide();
+      });
     },
     updateCareerGoal() {
-      let tokens = JSON.parse(localStorage.getItem("tokens"));
       var bodyFormData = new FormData();
-
       bodyFormData.set("user_id", this.userdata.user_id);
       bodyFormData.set("career_goal", this.career_goal);
 
-      axios
-        .put(
-          process.env.VUE_APP_API_URL + "info/" + this.userdata.id + "/",
-          bodyFormData,
-          {
-            headers: {
-              Authorization: "Bearer " + tokens.access,
-            },
-          }
-        )
-        .then((response) => {
-          this.userdata = response.data;
+      UserInfoService.updateUserInfo(bodyFormData, this.userdata.id).then(
+        (response) => {
+          this.userdata = response;
           this.goalhide();
-        });
+        }
+      );
     },
   },
   props: [
@@ -566,8 +543,6 @@ export default {
     "interested_area",
     "isEditable",
   ],
-  mounted() {
- 
-  },
+  mounted() {},
 };
 </script>

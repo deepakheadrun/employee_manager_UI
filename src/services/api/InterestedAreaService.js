@@ -13,5 +13,11 @@ export default {
           return response.data
       }).catch((response) => { return response.data })
       return result
+    },
+    deleteInterestedArea(id){
+      const result = APIService.delete("interested_area/"+id+ "/")
+      .then((response)=>{return response.data}).catch((response)=>{response.data})
+    
+        return result
     }
 }

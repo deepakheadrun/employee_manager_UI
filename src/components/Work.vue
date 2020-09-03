@@ -251,8 +251,10 @@
   </div>
 </template>
 <script>
-import axios from "axios";
+
 import Datepicker from "vuejs-datepicker";
+import ExperienceService from '../services/api/ExperienceService';
+import SikllService from '../services/api/SikllService';
 export default {
   name: "Work",
   props: ["skills", "experience", "isEditable"],
@@ -274,31 +276,18 @@ export default {
   },
   methods: {
     addNewSkill() {
-      let tokens = JSON.parse(localStorage.getItem("tokens"));
       var bodyFormData = new FormData();
-
       bodyFormData.set("user_id", this.$store.state.logedInUser.pk);
       bodyFormData.set("name", this.new_skill);
-      axios
-        .post(process.env.VUE_APP_API_URL + "skill/", bodyFormData, {
-          headers: {
-            Authorization: "Bearer " + tokens.access,
-          },
-        })
+      
+      SikllService.postSkill(bodyFormData)
         .then((response) => {
-          this.skills.push(response.data);
+          this.skills.push(response);
         });
       this.new_skill = null;
     },
     deleteskill(id) {
-      let tokens = JSON.parse(localStorage.getItem("tokens"));
-
-      axios
-        .delete(process.env.VUE_APP_API_URL + "skill/" + id + "/", {
-          headers: {
-            Authorization: "Bearer " + tokens.access,
-          },
-        })
+      SikllService.deleteSkill(id)
         .then(() => {
           this.skills = [...this.skills.filter((x) => x.id != id)];
         });
@@ -335,22 +324,15 @@ export default {
     addorUpdate() {
       var bodyFormData = new FormData();
       if (!this.isUpdate) {
-        let tokens = JSON.parse(localStorage.getItem("tokens"));
-
         bodyFormData.set("user_id", this.$store.state.logedInUser.pk);
         bodyFormData.set("company_name", this.company_name);
         bodyFormData.set("job_title", this.job_title);
         bodyFormData.set("_from", this.from);
         bodyFormData.set("_to", this.to);
         bodyFormData.set("description", this.description);
-        axios
-          .post(process.env.VUE_APP_API_URL + "experience/", bodyFormData, {
-            headers: {
-              Authorization: "Bearer " + tokens.access,
-            },
-          })
+        ExperienceService.postExperience(bodyFormData)
           .then((response) => {
-            this.experience.push(response.data);
+            this.experience.push(response);
           });
         (this.company_name = null),
           (this.from = null),
@@ -361,7 +343,7 @@ export default {
 
         this.exeriencehide();
       } else {
-        let tokens = JSON.parse(localStorage.getItem("tokens"));
+   
         let id = this.id;
         bodyFormData.set("id", id);
         bodyFormData.set("user_id", this.$store.state.logedInUser.pk);
@@ -370,19 +352,11 @@ export default {
         bodyFormData.set("_from", this.from);
         bodyFormData.set("_to", this.to);
         bodyFormData.set("description", this.description);
-        axios
-          .put(
-            process.env.VUE_APP_API_URL + "experience/" + id + "/",
-            bodyFormData,
-            {
-              headers: {
-                Authorization: "Bearer " + tokens.access,
-              },
-            }
-          )
+        ExperienceService.updateExperience(bodyFormData,id)
           .then((response) => {
-            this.experience = [...this.experience.filter((x) => x.id != id)];
-            this.experience.push(response.data);
+            let index = this.experience.findIndex((x) => x.id == id);
+            this.experience.splice(index, 1, response);
+           
           });
         (this.company_name = null),
           (this.from = null),
