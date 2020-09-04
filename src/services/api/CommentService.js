@@ -17,5 +17,11 @@ export default {
         .then((response)=>{return response.data}).catch((response)=>{response.data})
      
          return result
+      },
+      deleteComment(id){
+        const result = APIService.delete("comment/" + id + "/",)
+        .then((response)=>{return response.data}).catch((response)=>{response.data})
+    
+        return result
       }
 }

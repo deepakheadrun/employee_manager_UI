@@ -239,6 +239,23 @@
                 />
               </svg>
             </button>
+             <button v-on:click="deleteExerience(item.id) " class="h-6 w-6 pt-1 mx-4">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="100%"
+                        height="100%"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="feather feather-x cursor-pointer hover:text-yellow-400 rounded-full w-6 h-6 bg-red-500"
+                      >
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                      </svg>
+                    </button>
           </div>
         </div>
         <div class="mt-2 mb-4 pb-4 w-full">
@@ -308,6 +325,13 @@ export default {
     addNewExerience() {
       this.isUpdate = false;
       this.exerienceshow();
+    },
+    deleteExerience(id){
+      console.log(id)
+      ExperienceService.deleteExperience(id).then(()=>{
+         let index = this.experience.findIndex((x) => x.id == id);
+            this.experience.splice(index, 1);
+      })
     },
     udpateExerience(id) {
       this.toUpdate = this.experience.find((x) => x.id == id);

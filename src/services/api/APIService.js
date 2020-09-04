@@ -44,7 +44,7 @@ export default {
         return result
     },
     delete(url) {
-        this.$store.dispatch("setLoading", true);
+      store.dispatch("setLoading", true);
         const response = axios({
             method: "DELETE",
             url: process.env.VUE_APP_API_URL + url,
@@ -52,10 +52,10 @@ export default {
                 'Content-Type': 'application/json',
             },
         }).then((response) => {
-            this.$store.dispatch("setLoading", false);
+            store.dispatch("setLoading", false);
             return response
         }).catch((error) => {
-            this.$store.dispatch("setLoading", false);
+            store.dispatch("setLoading", false);
             return error;
         });
         return response

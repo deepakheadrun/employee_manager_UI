@@ -30,7 +30,6 @@ export default {
   },
   methods:{
     onClick(){
-      console.log("dsfds")
       this.$store.dispatch("setSelectedUser",this.userinfo)
       this.$router.push({ path: '/user/'+ this.user_id })
     }

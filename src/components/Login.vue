@@ -72,8 +72,6 @@ export default {
         headers: { "Content-Type": "multipart/form-data" },
       })
         .then(function (response) {
-          //handle success
-          console.log(response.data)
           localStorage.setItem('tokens', JSON.stringify(response.data))
           window.location.href = '/';
         })

@@ -17,5 +17,11 @@ export default {
         .then((response)=>{return response.data}).catch((response)=>{response.data})
      
          return result
+      },
+      deletePerformance(id){
+        const result = APIService.delete("performance/" + id + "/",)
+        .then((response)=>{return response.data}).catch((response)=>{response.data})
+    
+        return result
       }
 }

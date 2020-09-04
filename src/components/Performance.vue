@@ -135,9 +135,19 @@
         <div class="flex-auto w-1/2">
           <h1 class="text-2xl pt-2">Ratings</h1>
           <div class="bg-white px-4 mt-4 pt-2 pb-4 text-left rounded">
-            <div v-for="item in this.performance" :key="item.id" class="px-4 mt-2 pt-1">
-              {{item.month}} - {{item.rating}}
-              <button
+            <table class="table-auto">
+  <thead>
+    <tr>
+      <th class="px-4 py-2">Month</th>
+      <th class="px-4 py-2">Rating</th>
+      <th v-if="isEditable" class="px-4 py-2">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr v-for="item in this.performance" :key="item.id" >
+      <td class="border px-4 py-2">{{item.month}}</td>
+      <td class="border px-4 py-2">{{item.rating}}</td>
+      <td v-if="isEditable" class="border px-4 py-2"><button
                 v-if="isEditable"
                 v-on:click="udpateRating(item.id)"
                 class="h-6 w-6 pt-1 mx-4"
@@ -153,7 +163,28 @@
                   />
                 </svg>
               </button>
-            </div>
+               <button v-on:click="deleteRating(item.id) " class="h-6 w-6 pt-1 mx-4">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="100%"
+                        height="100%"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="feather feather-x cursor-pointer hover:text-yellow-400 rounded-full w-6 h-6 bg-red-500"
+                      >
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                      </svg>
+                    </button></td>
+    </tr>
+    
+  </tbody>
+</table>
+            
           </div>
         </div>
         <div class="flex-auto w-1/2">
@@ -196,6 +227,23 @@
                 />
               </svg>
             </button>
+             <button v-if="isEditable" v-on:click="deleteComment(item.id) " class="h-6 w-6 pt-1 mx-4">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="100%"
+                        height="100%"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="feather feather-x cursor-pointer hover:text-yellow-400 rounded-full w-6 h-6 bg-red-500"
+                      >
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                      </svg>
+                    </button>
           </div>
         </div>
       </div>
@@ -205,7 +253,7 @@
 
 <script>
 import PerformanceChart from "./PerformanceChart.vue";
-import axios from "axios";
+
 import PerformanceService from "../services/api/PerformanceService";
 import CommentService from "../services/api/CommentService";
 export default {
@@ -256,8 +304,22 @@ export default {
       this.isUpdate = false;
       this.ratingshow();
     },
+    deleteRating(id){
+      PerformanceService.deletePerformance(id).then(()=>{
+ let index = this.performance.findIndex((x) => x.id == id);
+            this.performance.splice(index, 1);
+      })
+           
+    },
     addComment() {
       this.commentshow();
+    },
+    deleteComment(id){
+            CommentService.deleteComment(id).then(()=>{
+              let index = this.comments.findIndex((x) => x.id == id);
+            this.comments.splice(index, 1);
+            })
+            
     },
     updateComment(id) {
       this.toUpdate = this.comments.find((x) => x.id == id);
@@ -328,7 +390,7 @@ export default {
         bodyFormData.set("month", this.month);
         bodyFormData.set("rating", this.rating);
 
-        axios;
+        
         PerformanceService.updatePerformance(bodyFormData, id).then(
           (response) => {
             let index = this.performance.findIndex((x) => x.id == id);

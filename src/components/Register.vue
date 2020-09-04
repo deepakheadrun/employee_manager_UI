@@ -113,11 +113,7 @@ export default {
       bodyFormData.set("password", this.password);
       bodyFormData.set("password_confirm", this.password2);
       UserService.addUser(bodyFormData)
-        .then(response=> {
-          //handle success
-          console.log(response);
-         
-          // this.setNewUserInfo(response.data.id)
+        .then(()=> {
           window.location.href = "/login";
         })
         .catch(function (response) {
