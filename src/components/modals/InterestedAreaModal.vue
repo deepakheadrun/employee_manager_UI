@@ -75,7 +75,7 @@ export default {
       interested_area_list: this.interested_area,
     };
   },
-  props: ["interested_area", "userId"],
+  props: ["interested_area"],
   methods: {
     interestedAreahide() {
       this.$modal.hide("interestedArea-modal");
@@ -83,7 +83,7 @@ export default {
     addNewInterestedArea() {
       var bodyFormData = new FormData();
 
-      bodyFormData.set("user_id", this.userId);
+      bodyFormData.set("user_id", this.$store.state.logedInUser.pk);
       bodyFormData.set("name", this.new_interested_area);
       InterestedAreaService.postInterestedArea(bodyFormData).then(
         (response) => {

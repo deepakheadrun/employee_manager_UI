@@ -3,7 +3,7 @@
     <BasicInfoModal v-on:updateBasicInfo="updateBasicInfo($event)" v-bind:info="{first_name:this.f_name,last_name:this.l_name,email:this.email}" />
     <WorkModal v-on:updateWork="updateWork($event)" v-bind:userdata="this.userdata" />
     <CareerGoalModal v-on:updateCareerGoal="updateCareerGoal($event)" v-bind:userdata="this.userdata" />
-    <InterestedAreaModal v-on:updateInterestedArea="updateInterestedArea($event)" v-bind:interested_area="this.interested_area_list" v-bind:userId="this.userdata.user_id" />
+    <InterestedAreaModal v-on:updateInterestedArea="updateInterestedArea($event)" v-bind:interested_area="this.interested_area_list" />
    
     <div class="bg-white px-4 text-left rounded">
       <span class="text-2xl pt-2">Basic Info</span>
