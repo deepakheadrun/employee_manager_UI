@@ -76,9 +76,7 @@ export default {
       skill_list: this.skills,
     };
   },
-  mounted(){
-console.log(this.skills)
-  },
+ 
   props: ["skills"],
   methods: {
        addNewSkill() {
