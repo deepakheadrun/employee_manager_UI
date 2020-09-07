@@ -1,8 +1,8 @@
 <template>
      <div class="loader" > 
-      <div  class="bg-indigo-400 justify-center inline-block animate-spin ease duration-300 w-5 h-5 bg-black mx-2 " ></div>
-    <div  class="bg-indigo-400 justify-center inline-block animate-spin ease duration-300 w-5 h-5 bg-black mx-2 " ></div>
-    <div class=" bg-indigo-400 justify-center inline-block animate-spin ease duration-300 w-5 h-5 bg-black mx-2 " ></div>
+      <div  class="bg-teal-400 justify-center inline-block animate-spin ease duration-300 w-5 h-5 mx-2 " ></div>
+    <div  class="bg-teal-400 justify-center inline-block animate-spin ease duration-300 w-5 h-5 mx-2 " ></div>
+    <div class=" bg-teal-400 justify-center inline-block animate-spin ease duration-300 w-5 h-5 mx-2 " ></div>
    </div>
 </template>
 
