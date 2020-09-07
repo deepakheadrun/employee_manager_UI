@@ -9,42 +9,8 @@
       <span class="text-2xl pt-2">Basic Info</span>
      
       
-      <modal :height="300" name="goal-modal">
-        <div class="p-8">
-          <h2
-            class="mt-2 text-center text-3xl leading-9 font-extrabold text-gray-900"
-          >Update Career Goal</h2>
-          <div class>
-            <div class="px-8 pt-4">
-              <div class="-mt-px pt-2">
-                <label
-                  class="block text-gray-700 text-sm font-bold mb-2"
-                  for="careerGoal"
-                >Career Goal</label>
-                <textarea
-                  aria-label="Career Goal"
-                  v-model="career_goal"
-                  name="careerGoal"
-                  type="text"
-                  required
-                  class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5"
-                  placeholder="Career Goal"
-                />
-              </div>
-            </div>
-          </div>
-          <div class="mt-6 pb-8">
-            <button
-              v-on:click="updateCareerGoal"
-              class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
-            >
-              <span class="absolute left-0 inset-y-0 flex items-center pl-3"></span>
-              Update
-            </button>
-          </div>
-        </div>
-      </modal>
-
+      <CareerGoalModal v-on:updateCareerGoal="updateCareerGoal($event)"
+        v-bind:userdata="this.userdata" />
       <modal :height="300" name="interestedArea-modal">
         <div class="p-8">
           <h2
@@ -211,7 +177,7 @@
         </svg>
       </button>
       <div class="px-8 pt-4 pb-4">
-        <span>{{this.userdata.career_goal}}</span>
+        <span>{{this.career_goal}}</span>
       </div>
     </div>
     <div class="bg-white px-4 text-left mt-4 rounded">
@@ -242,15 +208,16 @@
 <script>
 
 
-import UserInfoService from "../services/api/UserInfoService";
 import InterestedAreaService from "../services/api/InterestedAreaService";
 import BasicInfoModal from "./modals/BasicinfoModal"
 import WorkModal from "./modals/WorkModal"
+import CareerGoalModal from "./modals/CareerGoalModal"
 export default {
   name: "BasicInfo",
   components: {
    WorkModal,
-    BasicInfoModal
+    BasicInfoModal,
+    CareerGoalModal
   },
   data() {
     return {
@@ -282,9 +249,7 @@ export default {
     goalshow() {
       this.$modal.show("goal-modal");
     },
-    goalhide() {
-      this.$modal.hide("goal-modal");
-    },
+   
     interestedAreashow() {
       this.$modal.show("interestedArea-modal");
     },
@@ -329,17 +294,8 @@ export default {
       this.reporting_to=response.reporting_to,
       this.date_of_joining=response.date_of_joining, response;   
     },
-    updateCareerGoal() {
-      var bodyFormData = new FormData();
-      bodyFormData.set("user_id", this.userdata.user_id);
-      bodyFormData.set("career_goal", this.career_goal);
-
-      UserInfoService.updateUserInfo(bodyFormData, this.userdata.id).then(
-        (response) => {
-          this.userdata = response;
-          this.goalhide();
-        }
-      );
+    updateCareerGoal(response) {
+    this.career_goal = response.career_goal
     },
   },
   props: [
