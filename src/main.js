@@ -3,6 +3,10 @@ import App from './App.vue'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import VModal from 'vue-js-modal'
+import Toasted from 'vue-toasted';
+ 
+
+ 
 import router from './router'
 import store from './store'
 Vue.config.productionTip = false
@@ -19,6 +23,7 @@ axios.interceptors.response.use(function (response) {
 
   return Promise.reject(error);
 });
+Vue.use(Toasted)
 Vue.use(VueAxios, axios)
 Vue.use(VModal, { dialog: true })
 new Vue({
