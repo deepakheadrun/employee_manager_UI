@@ -157,7 +157,8 @@ export default {
       UserInfoService.updateUserInfo(bodyFormData,this.userData.id)
         .then((response) => {
           this.getImageUrl(response.image);
-        });
+          this.$toasted.success("Image uploaded successfully", { duration: 5000 });
+        })
     },
     onTabsClick(index) {
       this.activeTab = index;

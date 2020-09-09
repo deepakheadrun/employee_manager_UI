@@ -17,6 +17,7 @@
                 class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5"
                 placeholder="Email address"
               />
+              
             </div>
             <div class="flex">
               <div class="-mt-px p-2 w-1/2">
@@ -30,6 +31,7 @@
                   class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5"
                   placeholder="First Name"
                 />
+               
               </div>
               <div class="-mt-px p-2 w-1/2">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="lName">Last Name</label>
@@ -55,9 +57,7 @@
             </button>
           </div>
         </div>
-      </modal>
-
-     
+      </modal>  
     </div>
 </template>
 
@@ -74,11 +74,13 @@ export default {
         return({
             first_name : this.info.first_name,
             last_name : this.info.last_name,
-            email : this.info.email
+            email : this.info.email,
         })
     },
     methods:{
          updateBasicInfo() {
+           if(this.checkForm()){
+             
       var bodyFormData = new FormData();
 
       bodyFormData.set("username", this.email);
@@ -86,15 +88,45 @@ export default {
       bodyFormData.set("last_name", this.last_name);
       UserService.updateUser(bodyFormData).then((response) => {
         this.$store.dispatch("setLogedInUserRole", response);
- 
         this.$emit("updateBasicInfo", response);
-
+        this.$toasted.success("Information Updated",{duration:5000})
         this.basicinfohide();
       });
+    }
     },
      basicinfohide() {
       this.$modal.hide("basicinfo-modal");
     },
+       validateEmail() {
+      var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      if (re.test(this.email)) {
+  
+        return true
+      } else {
+        
+        this.$toasted.error("Invalid Email Address", { duration: 5000 });
+        return false
+      }
+    },
+    validateFirstName(){
+      if(!this.first_name){
+        this.$toasted.error("First Name required", { duration: 5000 });
+        return false
+      }
+      else{
+    
+        return true
+      }
+    },
+    
+     checkForm() {  
+      
+      if (this.validateEmail() &&
+       this.validateFirstName() ) {
+        return true;
+      }
+      console.log(this.msg.email)
+     }
     }
 }
 </script>

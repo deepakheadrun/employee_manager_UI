@@ -17,10 +17,12 @@ if (tokens) {
 axios.interceptors.response.use(function (response) {
   return response;
 }, function (error) {
+ 
   if (error.response.status == 401) {
-    window.location.href = "/login";
+    router.push({ path: '/login'}).catch(()=>{})
   }
 
+  Vue.toasted.error(JSON.stringify(error.response.data), { duration: 5000 })
   return Promise.reject(error);
 });
 Vue.use(Toasted)
