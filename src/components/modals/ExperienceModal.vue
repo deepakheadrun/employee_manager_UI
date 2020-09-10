@@ -150,6 +150,7 @@ export default {
       this.to = e.toISOString().slice(0, 10);
     },
     addorUpdate() {
+      if(this.checkForm()){
       var bodyFormData = new FormData();
       if (!this.isUpdate) {
         bodyFormData.set("user_id", this.$store.state.logedInUser.pk);
@@ -188,10 +189,76 @@ export default {
           (this.id = null);
 
         this.exeriencehide();
+        }
     },
     exeriencehide() {
       this.$modal.hide("experience-modal");
     },
+
+ checkForm() {  
+     
+      if (this.validateCompanyName() &&
+       this.validateJobTitle() &&
+       this.validateFrom() &&
+       this.validateTo() &&
+       this.validateDescription()
+        ) {
+        return true;
+      }
+      
+     },
+     validateCompanyName(){
+        if(!this.company_name){
+        this.$toasted.error("Company Name Required", { duration: 5000 });
+        return false
+      }
+      if(this.company_name.length>60){
+        this.$toasted.error("Job Title should contain only 60 letters", { duration: 5000 });
+        return false
+      }
+     
+        return true
+    },
+validateJobTitle(){
+      if(!this.job_title){
+        this.$toasted.error("Title Required", { duration: 5000 });
+        return false
+      }
+      if(this.job_title.length>30){
+        this.$toasted.error("Title should contain only 30 letters", { duration: 5000 });
+        return false
+      }
+  
+        return true
+    },
+
+
+    validateFrom(){
+      if(!this.from){
+        this.$toasted.error("From Date Required", { duration: 5000 });
+        return false
+      }
+        return true
+    },
+
+     validateTo(){
+      if(!this.to){
+        this.$toasted.error("To Date Required", { duration: 5000 });
+        return false
+      }
+        return true
+    },
+
+    validateDescription(){
+      if(this.description && this.description.length>300){
+        this.$toasted.error("Description should contain only 300 letters", { duration: 5000 });
+        return false
+      }
+     
+        return true
+    },
+
+   
     },
 
 }
