@@ -12,7 +12,8 @@
                   >Date Of Joining</label>
                   <datepicker
                     name="date"
-                    v-bind:class="'appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5'"
+                    placeholder="Select Date"
+                    v-bind:input-class="' w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5'"
                     @selected="dateSelected"
                     :value="date_of_joining"
                     :format="'yyyy-MM-dd'"
@@ -145,6 +146,7 @@ Datepicker
     },
     methods:{
         updateWork() {
+          if(this.checkForm()){
       var bodyFormData = new FormData();
 
       bodyFormData.set("user_id", this.userdata.user_id);
@@ -162,12 +164,91 @@ Datepicker
         this.$emit("updateWork", response);
         this.workhide();
       });
+      }
     },
 dateSelected(e) {
       this.date_of_joining = e.toISOString().slice(0, 10);
     },
      workhide() {
       this.$modal.hide("work-modal");
+    },
+    checkForm() {  
+     
+      if (this.validateJobTitle() &&
+       this.validateEmployeeId() &&
+       this.validateDepartment() &&
+       this.validateEmployeeType() &&
+       this.validateReportingTo() &&
+       this.validateMobile() 
+        ) {
+        return true;
+      }
+      
+     },
+     validateJobTitle(){
+      if(this.job_title.length>30){
+        this.$toasted.error("Job Title should contain only 30 letters", { duration: 5000 });
+        return false
+      }
+      else{
+        return true
+      }
+    },
+
+    validateEmployeeId(){
+      if(this.employee_id.length>18){
+        this.$toasted.error("EmployeeId should contain only 18 letters", { duration: 5000 });
+        return false
+      }
+      else{
+        return true
+      }
+    },
+
+    validateDepartment(){
+      if(this.department.length>60){
+        this.$toasted.error("Department should contain only 60 letters", { duration: 5000 });
+        return false
+      }
+      else{
+        return true
+      }
+    },
+
+    validateEmployeeType(){
+      if(this.employee_type.length>30){
+        this.$toasted.error("Employee Type should contain only 30 letters", { duration: 5000 });
+        return false
+      }
+      else{
+        return true
+      }
+    },
+
+    validateReportingTo(){
+      if(this.reporting_to.length>60){
+        this.$toasted.error("ReportingTo should contain only 60 letters", { duration: 5000 });
+        return false
+      }
+      else{
+        return true
+      }
+    },
+
+    validateMobile(){
+     let re  = /^(\+\d{1,3}[- ]?)?\d{10}$/
+
+      if(this.mobile.length>18){
+        this.$toasted.error("Mobile should contain only 18 letters", { duration: 5000 });
+        return false
+      }
+      if(!re.test(this.mobile)){
+        this.$toasted.error("Mobile number not formatted correctly", { duration: 5000 });
+        return false
+      }
+      
+        return true
+      
     },
     }
 }

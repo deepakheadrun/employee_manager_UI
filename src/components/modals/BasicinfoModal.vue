@@ -125,7 +125,7 @@ export default {
        this.validateFirstName() ) {
         return true;
       }
-      console.log(this.msg.email)
+      
      }
     }
 }
