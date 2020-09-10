@@ -1,5 +1,5 @@
 <template>
-  <modal :height="300" name="interestedArea-modal">
+  <modal :height="300 +40*(this.interested_area_list.length/4)" name="interestedArea-modal">
     <div class="p-8">
       <h2
         class="mt-2 text-center text-3xl leading-9 font-extrabold text-gray-900"
@@ -9,7 +9,7 @@
           <div class="w-1/2">
             <div class="-mt-px pt-2">
               <label
-                class="block text-gray-700 text-sm font-bold mb-2"
+                class="block text-gray-700 text-sm font-bold mb-1"
                 for="interested_area"
               >Add New Interested Area</label>
               <input
@@ -22,17 +22,24 @@
                 placeholder="Add Interested Area"
               />
             </div>
-            <div class="mt-6 pb-8">
+             
+          </div>
+          <div class="w-1/2">
+            <div class="px-8 pt-4 pb-4">
+              <div class="pt-4 pb-2">
+               
               <button
                 v-on:click="addNewInterestedArea"
                 class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
               >Add</button>
             </div>
+               
+            
+            </div>
           </div>
-          <div class="w-1/2">
-            <div class="px-8 pt-4 pb-4">
-              <div class="pt-4 pb-2">
-                <span
+        </div>
+        <div class="mt-6 pb-8">
+             <span
                   v-for="item in this.interested_area_list"
                   :key="item.id"
                   class="inline-block bg-blue-200 rounded-full mx-1 px-3 py-1 text-sm font-semibold text-gray-700 mb-2"
@@ -56,10 +63,7 @@
                   </button>
                   {{item.name}}
                 </span>
-              </div>
-            </div>
-          </div>
-        </div>
+                  </div>
       </div>
       <div class="mt-6"></div>
     </div>
@@ -81,6 +85,7 @@ export default {
       this.$modal.hide("interestedArea-modal");
     },
     addNewInterestedArea() {
+      if(this.checkForm()){
       var bodyFormData = new FormData();
 
       bodyFormData.set("user_id", this.$store.state.logedInUser.pk);
@@ -92,6 +97,7 @@ export default {
           this.$emit("updateInterestedArea", this.interested_area_list);
         }
       );
+    }
     },
     deleteInterestedArea(id) {
       InterestedAreaService.deleteInterestedArea(id).then(() => {
@@ -102,6 +108,24 @@ export default {
         this.new_interested_area = null;
         this.$emit("updateInterestedArea", this.interested_area_list);
       });
+    },
+
+     checkForm() {  
+     
+      if (this.validateNewInterestedArea() 
+        ) {
+        return true;
+      }
+      
+     },
+     validateNewInterestedArea(){
+      if(this.new_interested_area.length>30){
+        this.$toasted.error("Interested Area should contain only 30 letters", { duration: 5000 });
+        return false
+      }
+      else{
+        return true
+      }
     },
   },
 };
