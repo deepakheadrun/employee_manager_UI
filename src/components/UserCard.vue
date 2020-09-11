@@ -1,15 +1,7 @@
 <template>
   <!-- path: '/user/'+ this.user_id, -->
-  <router-link
-    :to="{
-    
-    name:'UserProfile',
-    params: {
-        item: {'id':this.user_id, 'first_name': this.userinfo.first_name,'last_name':this.userinfo.last_name, 'email': this.email }
-    }
-}"
-  >
-    <div class="max-w-sm rounded overflow-hidden shadow-lg">
+  
+    <div v-on:click="onClick" class="max-w-sm rounded overflow-hidden shadow-lg">
       <img class="w-full" v-bind:style="{height:310+'px'}" v-bind:src="this.imageUrl" />
       <div class="px-6 py-4">
         <div class="font-bold text-xl mb-2">{{this.name}}</div>
@@ -21,7 +13,7 @@
       >software engineer</span>
       </div>-->
     </div>
-  </router-link>
+  
 </template>
 
 <script>
@@ -35,6 +27,12 @@ export default {
       email: "",
       imageUrl: null,
     };
+  },
+  methods:{
+    onClick(){
+      this.$store.dispatch("setSelectedUser",this.userinfo)
+      this.$router.push({ path: '/user/'+ this.user_id })
+    }
   },
   mounted() {
     if (this.userinfo) {

@@ -17,9 +17,9 @@
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="rating">Rating</label>
                 <input
                   aria-label="Rating"
-                  v-model="rating"
+                  v-model.number="rating"
                   name="rating"
-                  type="text"
+                  type="number"
                   required
                   class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5"
                   placeholder="Rating"
@@ -94,7 +94,7 @@
                 type="text"
                 required
                 class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5"
-                placeholder="Comment"
+                placeholder="Description"
               />
             </div>
 
@@ -124,18 +124,30 @@
     </modal>
 
     <div>
-      <button v-if="isEditable"
+      
+      <div class="px-8 pt-4">
+        <button
+        v-if="isEditable"
         class="text-center block border border-white border-gray-400 rounded hover:bg-teal-700 text-black-500 hover:bg-gray-700 py-2 px-4"
         @click="addRating"
       >Add Rating</button>
-
-      <div class="flex px-8 pt-4">
+  <div class="flex">
         <div class="flex-auto w-1/2">
           <h1 class="text-2xl pt-2">Ratings</h1>
           <div class="bg-white px-4 mt-4 pt-2 pb-4 text-left rounded">
-            <div v-for="item in this.performance" :key="item.id" class="px-4 mt-2 pt-1">
-              {{item.month}} - {{item.rating}}
-              <button
+            <table class="table-auto">
+  <thead>
+    <tr>
+      <th class="px-4 py-2">Month</th>
+      <th class="px-4 py-2">Rating</th>
+      <th v-if="isEditable" class="px-4 py-2">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr v-for="item in this.performance" :key="item.id" >
+      <td class="border px-4 py-2">{{item.month}}</td>
+      <td class="border px-4 py-2">{{item.rating}}</td>
+      <td v-if="isEditable" class="border px-4 py-2"><button
                 v-if="isEditable"
                 v-on:click="udpateRating(item.id)"
                 class="h-6 w-6 pt-1 mx-4"
@@ -151,7 +163,28 @@
                   />
                 </svg>
               </button>
-            </div>
+               <button v-on:click="deleteRating(item.id) " class="h-6 w-6 pt-1 mx-4">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="100%"
+                        height="100%"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="feather feather-x cursor-pointer hover:text-yellow-400 rounded-full w-6 h-6 bg-red-500"
+                      >
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                      </svg>
+                    </button></td>
+    </tr>
+    
+  </tbody>
+</table>
+            
           </div>
         </div>
         <div class="flex-auto w-1/2">
@@ -159,9 +192,11 @@
           <!-- <button @click="fillData()">Randomize</button> -->
         </div>
       </div>
+      </div>
     </div>
     <div class="px-8 pt-4">
-      <button v-if="isEditable"
+      <button
+        v-if="isEditable"
         class="text-center block border border-white border-gray-400 rounded hover:bg-teal-700 text-black-500 hover:bg-gray-700 py-2 px-4"
         @click="addComment"
       >Add Comment</button>
@@ -175,7 +210,6 @@
           >
             Date - {{item.date}}
             <p class="font-bold pb-4">{{item.description}}</p>
-
             -by {{item.by}}
             <button
               v-if="isEditable"
@@ -193,6 +227,23 @@
                 />
               </svg>
             </button>
+             <button v-if="isEditable" v-on:click="deleteComment(item.id) " class="h-6 w-6 pt-1 mx-4">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="100%"
+                        height="100%"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="feather feather-x cursor-pointer hover:text-yellow-400 rounded-full w-6 h-6 bg-red-500"
+                      >
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                      </svg>
+                    </button>
           </div>
         </div>
       </div>
@@ -202,7 +253,9 @@
 
 <script>
 import PerformanceChart from "./PerformanceChart.vue";
-import axios from "axios";
+
+import PerformanceService from "../services/api/PerformanceService";
+import CommentService from "../services/api/CommentService";
 export default {
   name: "Performance",
 
@@ -225,9 +278,6 @@ export default {
     };
   },
   mounted() {
-    
-    // need to update user_id
-
     if (
       this.$store.state.role == "Manager" &&
       this.$store.state.logedInUser.pk != this.userdata.user_id
@@ -236,7 +286,6 @@ export default {
     } else {
       this.isEditable = false;
     }
-   
   },
   methods: {
     ratingshow() {
@@ -255,8 +304,22 @@ export default {
       this.isUpdate = false;
       this.ratingshow();
     },
+    deleteRating(id){
+      PerformanceService.deletePerformance(id).then(()=>{
+ let index = this.performance.findIndex((x) => x.id == id);
+            this.performance.splice(index, 1);
+      })
+           
+    },
     addComment() {
       this.commentshow();
+    },
+    deleteComment(id){
+            CommentService.deleteComment(id).then(()=>{
+              let index = this.comments.findIndex((x) => x.id == id);
+            this.comments.splice(index, 1);
+            })
+            
     },
     updateComment(id) {
       this.toUpdate = this.comments.find((x) => x.id == id);
@@ -267,9 +330,7 @@ export default {
     },
     udpateRating(id) {
       this.toUpdate = this.performance.find((x) => x.id == id);
-
       this.isUpdate = true;
-     
       this.id = id;
       this.month = this.toUpdate.month;
       this.key = this.toUpdate.month;
@@ -278,119 +339,118 @@ export default {
     },
     onChange(event) {
       this.month = event.target.value;
-      
     },
     addOrUpdateComment() {
-    
+      if(this.checkCommentForm()){
       var bodyFormData = new FormData();
       if (!this.isUpdate) {
-        let tokens = JSON.parse(localStorage.getItem("tokens"));
-
         bodyFormData.set("user_id", this.userdata.user_id);
         bodyFormData.set("description", this.comment);
-        bodyFormData.set(
-          "by",
-          this.$store.state.logedInUser.first_name +
-            " " +
-            this.$store.state.logedInUser.last_name
-        );
+        bodyFormData.set("by", this.$store.state.logedInUser.first_name + " " + this.$store.state.logedInUser.last_name );
         bodyFormData.set("date", new Date().toISOString().slice(0, 10));
 
-        axios
-          .post(process.env.VUE_APP_API_URL + "comment/", bodyFormData, {
-            headers: {
-              Authorization: "Bearer " + tokens.access,
-            },
-          })
-          .then((response) => {
-            this.comments.push(response.data);
-          });
+        CommentService.postComment(bodyFormData).then((response) => {
+          this.comments.push(response);
+        });
         (this.comment = null), (this.id = null);
       } else {
-        let tokens = JSON.parse(localStorage.getItem("tokens"));
         let id = this.id;
         bodyFormData.set("id", id);
         bodyFormData.set("user_id", this.userdata.user_id);
         bodyFormData.set("description", this.comment);
-        bodyFormData.set(
-          "by",
-          this.$store.state.logedInUser.first_name +
-            " " +
-            this.$store.state.logedInUser.last_name
-        );
+        bodyFormData.set("by",this.$store.state.logedInUser.first_name + " " + this.$store.state.logedInUser.last_name );
         bodyFormData.set("date", new Date().toISOString().slice(0, 10));
-        axios
-          .put(
-            process.env.VUE_APP_API_URL + "comment/" + id + "/",
-            bodyFormData,
-            {
-              headers: {
-                Authorization: "Bearer " + tokens.access,
-              },
-            }
-          )
-          .then((response) => {
-            let index = this.comments.findIndex((x) => x.id == id);
-            this.comments.splice(index, 1, response.data);
-          });
+        CommentService.updateComment(bodyFormData, id).then((response) => {
+          let index = this.comments.findIndex((x) => x.id == id);
+          this.comments.splice(index, 1, response);
+        });
         this.comment = null;
-
         this.id = null;
       }
       this.commenthide();
+      }
     },
 
     addOrUpdateRating() {
-    
+      if(this.checkPerformanceForm()){
       var bodyFormData = new FormData();
       if (!this.isUpdate) {
-        let tokens = JSON.parse(localStorage.getItem("tokens"));
-
         bodyFormData.set("user_id", this.userdata.user_id);
         bodyFormData.set("month", this.month);
         bodyFormData.set("rating", this.rating);
-
-        axios
-          .post(process.env.VUE_APP_API_URL + "performance/", bodyFormData, {
-            headers: {
-              Authorization: "Bearer " + tokens.access,
-            },
-          })
-          .then((response) => {
-            this.performance.unshift(response.data);
-          });
+        PerformanceService.postPerformance(bodyFormData)
+        .then((response) => {
+          this.performance.unshift(response);
+        });
         (this.month = null),
           (this.rating = null),
           (this.to = null),
           (this.id = null);
       } else {
-        let tokens = JSON.parse(localStorage.getItem("tokens"));
         let id = this.id;
         bodyFormData.set("id", id);
         bodyFormData.set("user_id", this.userdata.user_id);
         bodyFormData.set("month", this.month);
         bodyFormData.set("rating", this.rating);
 
-        axios
-          .put(
-            process.env.VUE_APP_API_URL + "performance/" + id + "/",
-            bodyFormData,
-            {
-              headers: {
-                Authorization: "Bearer " + tokens.access,
-              },
-            }
-          )
-          .then((response) => {
+        
+        PerformanceService.updatePerformance(bodyFormData, id).then(
+          (response) => {
             let index = this.performance.findIndex((x) => x.id == id);
-            this.performance.splice(index, 1, response.data);
-          });
+            this.performance.splice(index, 1, response);
+          }
+        );
         (this.month = null),
           (this.rating = null),
           (this.to = null),
           (this.id = null);
       }
-      this.ratinghide();
+      this.ratinghide();}
+    },
+    checkCommentForm() {  
+      if (this.validateDescription() 
+        ) {
+        return true;
+      } 
+     },
+     checkPerformanceForm() {  
+      if (this.validateRating() && this.validateMonth()
+        ) {
+        return true;
+      } 
+     },
+     validateDescription(){
+      if(!this.comment){
+         this.$toasted.error("Description Required", { duration: 5000 });
+        return false
+       }
+        if(this.comment.length>500){
+        this.$toasted.error("Description should contain only 500 letters", { duration: 5000 });
+        return false
+      }
+       return true
+     },
+     validateRating(){
+       if(!this.rating){
+         this.$toasted.error("Rating Required", { duration: 5000 });
+        return false
+       }
+     
+      if(!(0<=Number(this.rating) && Number(this.rating)<=10)){
+        this.$toasted.error("Rating should in range 0 to 10", { duration: 5000 });
+        return false
+      }
+    
+        return true
+      
+    },
+
+     validateMonth(){
+       if(!this.month){
+         this.$toasted.error("Month Required", { duration: 5000 });
+        return false
+       }
+      return true
     },
   },
 };
