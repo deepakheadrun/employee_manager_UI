@@ -17,9 +17,9 @@
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="rating">Rating</label>
                 <input
                   aria-label="Rating"
-                  v-model="rating"
+                  v-model.number="rating"
                   name="rating"
-                  type="text"
+                  type="number"
                   required
                   class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5"
                   placeholder="Rating"
@@ -94,7 +94,7 @@
                 type="text"
                 required
                 class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5"
-                placeholder="Comment"
+                placeholder="Description"
               />
             </div>
 
@@ -341,6 +341,7 @@ export default {
       this.month = event.target.value;
     },
     addOrUpdateComment() {
+      if(this.checkCommentForm()){
       var bodyFormData = new FormData();
       if (!this.isUpdate) {
         bodyFormData.set("user_id", this.userdata.user_id);
@@ -367,9 +368,11 @@ export default {
         this.id = null;
       }
       this.commenthide();
+      }
     },
 
     addOrUpdateRating() {
+      if(this.checkPerformanceForm()){
       var bodyFormData = new FormData();
       if (!this.isUpdate) {
         bodyFormData.set("user_id", this.userdata.user_id);
@@ -402,7 +405,52 @@ export default {
           (this.to = null),
           (this.id = null);
       }
-      this.ratinghide();
+      this.ratinghide();}
+    },
+    checkCommentForm() {  
+      if (this.validateDescription() 
+        ) {
+        return true;
+      } 
+     },
+     checkPerformanceForm() {  
+      if (this.validateRating() && this.validateMonth()
+        ) {
+        return true;
+      } 
+     },
+     validateDescription(){
+      if(!this.comment){
+         this.$toasted.error("Description Required", { duration: 5000 });
+        return false
+       }
+        if(this.comment.length>500){
+        this.$toasted.error("Description should contain only 500 letters", { duration: 5000 });
+        return false
+      }
+       return true
+     },
+     validateRating(){
+       if(!this.rating){
+         this.$toasted.error("Rating Required", { duration: 5000 });
+        return false
+       }
+     
+      if(!(0<=Number(this.rating) && Number(this.rating)<=10)){
+        this.$toasted.error("Rating should in range 0 to 10", { duration: 5000 });
+        return false
+      }
+    
+        return true
+      
+    },
+
+     validateMonth(){
+       if(!this.month){
+         this.$toasted.error("Month Required", { duration: 5000 });
+        return false
+       }
+      return true
     },
   },
 };
