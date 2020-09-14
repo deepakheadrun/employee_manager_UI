@@ -74,7 +74,7 @@ export default {
       {id: this.$store.state.logedInUser.pk,
               first_name: this.$store.state.logedInUser.first_name,
               last_name: this.$store.state.logedInUser.last_name,
-              email: this.$store.state.logedInUser.email,
+              email: this.$store.state.logedInUser.username,
 })
 this.$router.push({ path: '/user/'+ this.$store.state.logedInUser.pk })
     

@@ -67,7 +67,7 @@ export default {
       }
     },
     validateCareerGoal() {
-      if (this.career_goal.length > 30) {
+      if (this.career_goal.length > 1000) {
         this.$toasted.error("Career Goal should contain only 1000 letters", {
           duration: 5000,
         });
