@@ -74,7 +74,7 @@ export default {
         return({
             first_name : this.info.first_name,
             last_name : this.info.last_name,
-            email : this.info.email,
+            email : this.info.username,
         })
     },
     methods:{
@@ -84,8 +84,11 @@ export default {
       var bodyFormData = new FormData();
 
       bodyFormData.set("username", this.email);
+      
       bodyFormData.set("first_name", this.first_name);
       bodyFormData.set("last_name", this.last_name);
+      this.debugger
+      console.log(bodyFormData)
       UserService.updateUser(bodyFormData).then((response) => {
         this.$store.dispatch("setLogedInUserRole", response);
         this.$emit("updateBasicInfo", response);

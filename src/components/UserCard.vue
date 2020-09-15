@@ -38,7 +38,7 @@ export default {
     if (this.userinfo) {
       (this.user_id = this.userinfo.id),
         (this.name = this.userinfo.first_name + " " + this.userinfo.last_name),
-        (this.email = this.userinfo.email);
+        (this.email = this.userinfo.username);
       if (this.userinfo.imageUrl && this.userinfo.imageUrl != "") {
         this.imageUrl = "http://127.0.0.1:8000" + this.userinfo.imageUrl;
       } else {
